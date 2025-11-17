@@ -11,6 +11,13 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 INTERVALO_ENVIO = 30  # tempo entre cupons
 
+# Verificação simples para evitar erro silencioso
+if not BOT_TOKEN:
+    raise Exception("ERRO: BOT_TOKEN não encontrado nas variáveis de ambiente do Render.")
+
+if not CHAT_ID:
+    raise Exception("ERRO: CHAT_ID não encontrado nas variáveis de ambiente do Render.")
+
 bot = telebot.TeleBot(BOT_TOKEN)
 app = Flask(__name__)
 
@@ -70,7 +77,7 @@ def loop_cupons():
 threading.Thread(target=loop_cupons, daemon=True).start()
 
 # =======================================================
-# ROTAS PARA PERMITIR EDIÇÃO VIA INSOMNIA
+# ROTAS PARA EDIÇÃO / INSOMNIA
 # =======================================================
 @app.route('/add', methods=['POST'])
 def add_cupom():
@@ -85,11 +92,9 @@ def add_cupom():
     CUPONS.append(data)
     return jsonify({"status": "Cupom adicionado com sucesso!"}), 200
 
-
 @app.route('/')
 def home():
-    return "Bot avançado de cupons rodando!"
-
+    return "Bot avançado de cupons rodando! 🟢"
 
 # =======================================================
 # EXECUTA FLASK (necessário para o Render)
